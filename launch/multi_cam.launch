@@ -1,0 +1,49 @@
+<launch>
+	<group ns="camera1">
+		<include file="$(find realsense2_camera)/launch/rs_camera.launch">
+			<arg name="usb_port_id"         default=""/>
+			<arg name="serial_no"           default="046322250275"/>
+			<arg name="tf_prefix"           default="cam1_tf"/>
+			<arg name="color_width"         default="640"/>
+			<arg name="color_height"        default="480"/>
+			<arg name="infra_width"         default="640"/>
+			<arg name="infra_height"        default="480"/>
+			<arg name="enable_color"        default="true"/>
+			<arg name="enable_infra1"       default="true"/>
+			<arg name="enable_infra2"       default="true"/>
+			<arg name="infra_fps"           value="30"/>
+			<arg name="align_depth"         value="false"/>
+			<arg name="depth_width"         value="640"/>
+			<arg name="depth_height"        value="480"/>
+			<arg name="enable_depth"        value="false"/>
+			<arg name="depth_fps"           value="5"/>
+			<arg name="json_file_path"      default="$(find image_stitching)/launch/includes/front_cam.json"/>
+		</include>
+	</group>
+
+	<!-- group ns="camera2">
+		<include file="$(find realsense2_camera)/launch/rs_camera.launch">
+			<arg name="usb_port_id"         default=""/>
+			<arg name="serial_no"           default="046322250705"/>
+			<arg name="tf_prefix"           default="cam2_tf"/>
+			<arg name="color_width"         default="640"/>
+			<arg name="color_height"        default="480"/>
+			<arg name="infra_width"         default="640"/>
+			<arg name="infra_height"        default="480"/>
+			<arg name="enable_infra1"       default="true"/>
+			<arg name="enable_infra2"       default="true"/>
+			<arg name="enable_color"        default="true"/>
+			<arg name="infra_fps"           value="30"/>
+			<arg name="align_depth"         value="false"/>
+			<arg name="depth_width"         value="640"/>
+			<arg name="depth_height"        value="480"/>
+			<arg name="enable_depth"        value="false"/>
+			<arg name="depth_fps"           value="5"/>
+			<arg name="json_file_path"      default="$(find image_stitching)/launch/includes/left_cam.json"/>
+		</include>
+	</group -->
+
+	<include file="$(find xsens_driver)/launch/xsens_driver.launch" />
+
+</launch>
+
