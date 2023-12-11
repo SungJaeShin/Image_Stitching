@@ -151,5 +151,7 @@ Change eight variables **"save_match1_dir, save_match2_dir, save_orb_dir, save_s
 [2] [https://github.com/SungJaeShin/Parallax.git](https://github.com/SungJaeShin/Parallax.git) \
 [3] [https://github.com/SungJaeShin/KAIST-DP.git](https://github.com/SungJaeShin/KAIST-DP.git) \
 [4] [https://docs.opencv.org/3.4/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323](https://docs.opencv.org/3.4/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323) \ 
-[5] Y. Xiong and K. Pulli, "Fast panorama stitching for high-quality panoramic images on mobile phones," in IEEE Transactions on Consumer Electronics, vol. 56, no. 2, pp. 298-306, May 2010, doi: 10.1109/TCE.2010.5505931.
+[5] [https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#ga7e54091f0c937d49bf84152a16f76d6e](https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#ga7e54091f0c937d49bf84152a16f76d6e) \
+[6] [https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#gad689d2607b7b3889453804f414ab1018](https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#gad689d2607b7b3889453804f414ab1018) \
+[7] Y. Xiong and K. Pulli, "Fast panorama stitching for high-quality panoramic images on mobile phones," in IEEE Transactions on Consumer Electronics, vol. 56, no. 2, pp. 298-306, May 2010, doi: 10.1109/TCE.2010.5505931.
 
