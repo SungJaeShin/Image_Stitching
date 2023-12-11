@@ -24,52 +24,131 @@ Follow [KAIST-DP](https://github.com/SungJaeShin/KAIST-DP.git) Dataset
   - Xsens MTI-300 IMU
   - Velodyne LiDAR VLP 16
 
+## 3. Methodology to apply image stitching
+- Reference Codes
+    - Feature Extraction & Descriptor & Matcher & Outlier Rejection
+        - Use this Github Page &rarr; [Feature Matching](https://github.com/SungJaeShin/Feature_matching.git)
+    - Parallax
+        - Use this Github Page &rarr; [Parallax](https://github.com/SungJaeShin/Parallax.git)
+---
+- **Histogram Equalization**
+    - [1] Vanilla
+    - [2] CHALE
 
+- **Feature Extraction**
+    - [1] ORB
+    - [2] goodFeaturesToTrack
+    - [3] SIFT
 
-### 1.5 **Get KAIST-DP Dataset**
-Follow [KAIST-DP]
+- **Feature Descriptor**
+    - [2] DAISY
 
-2. Methodology to apply feature matching
-  - [BASIC] Use this Github Page [Feature Matching](https://github.com/SungJaeShin/Feature_matching)
-  - [ADD] [Optical Flow Method](https://docs.opencv.org/3.4/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323) 
+- **Feature Macher**
+    - [1] Brute-Force Matcher (BF)
 
-https://github.com/SungJaeShin/Parallax.git
-### 1.6 **Other baseline Codes**
-[1] Github: [Feature Matching](https://github.com/SungJaeShin/Feature_matching.git)
-[2] Github: [Feature Matching](https://github.com/SungJaeShin/Feature_matching.git)
+- **Matching**
+    - [1] knn match (KNN)
 
+- **Outlier Rejection**
+    - [1] findFundamentalMatrix (FM)
+    - [2] Parallax
+    - [3] Optical Flow 
 
-## 2. Build Stitching_Image
+- **Stitching Base**
+    - [1] Camera Parameter Setting
+    - [2] Image Masking
+    - [3] Pre-check OpenCV Errors
+
+- **Fast Stitching Method**
+    - Feature Matcher &rarr; cv::detail::BestOf2NearestMatcher
+    - Camera Estimator &rarr; cv::detail::HomographyBasedEstimator
+    - Bundle Adjustment &rarr; cv::detail::BundleAdjusterRay
+    - Warping &rarr; cv::SphericalWarper
+    - Exposure &rarr; cv::detail::GainCompensator
+    - Seam &rarr; cv::detail::DpSeamFinder
+    - Blender &rarr; cv::detail::MultiBandBlender
+  
+## 4 **Changing Parameters**
+### Parameters in "paramsetting.h"
+```
+#define SEE_MASKING
+/* Visualize masking image (opencv_setting.h)
+   Not see masking result -> 0 & See masking result -> 1 */
+
+#define MASKING_REAL
+/* Visualize masking in real image or white image (visualization.h)
+   To see results in white image -> 0 & To see results in real image -> 1 */
+
+#define SAVE_SYNC_IMG_WITH_TIME 
+/* Visualize sync image with time (visualization.h)
+   Not see sync result -> 0 & See sync result -> 1 */
+
+#define SAVE_IMGS_WITH_FEATURES
+/* Visualize image with features (visualization.h) 
+   Not see image result with features -> 0 & See image result with features -> 1 */
+
+#define SAVE_IMGS_DESCRIPTOR_MATCHING 
+/* Visualize image with feature matching (visualization.h) 
+   Not see image matching result -> 0 & See image matching result -> 1 */
+
+#define RESIZE 
+/* Resize result of panorama image (stitching.cpp)
+   Not resize panorama image -> 0 & Resize panorama image -> 1 */
+
+#define FLOW_BACK
+/* Optical flow reverse check (parallax.h)
+   Not use reverse check -> 0 & Use reverse check -> 1 */
+
+#define HIST_EQUA 
+/* Use Histogram Equalization (preprocessing.h)
+   Not use histogram equalization -> 0 & Use histogram equalization -> 1 */
+
+#define USE_CHALE 
+/* Use CHALE Histogram Equalization (preprocessing.h) 
+   Not use CHALE histogram equalization -> 0 & Use CHALE histogram equalization -> 1 */
+
+#define FAST_STITCHING 
+/* Use Fast Stitching (stitch.h)
+   Not use fast stitching -> 0 & Use fast stitching -> 1 */
+
+#define METHOD 
+/* Debug OpenCV Error (error_filter.h)
+   ORB Feature + BF Matching w/ Hamming distance -> 0
+   SURF Feature + FLANN Matching w/ KNN -> 1
+   SURF Features + FLANN Matching w/ KNN + Masking -> 2 */
+
+#define MODE 
+/* Stitching Mode (stitch.h)
+   Vanilla -> 0
+   Camera Intrinsic -> 1
+   Camera Intrinsic + Masking -> 2
+   Camera Intrinsic + Masking in estimateTransform function -> 3 */
+```
+
+## 5. Build Stitching_Image
 Clone the repository and catkin_make:
 ```
     $ cd ~/catkin_ws/src
-    $ git clone https://github.com/SungJaeShin/Stitching_Image.git
+    $ git clone https://github.com/SungJaeShin/Image_Stitching.git
     $ cd ../
     $ catkin build
     $ source ~/catkin_ws/devel/setup.bash
 ```
 
-## 3. Run two cameras
+## 6. Run two cameras
 ```
     $ roslaunch image_stitching multi_cam.launch
     $ rosrun image_stitching stitching_node
     $ (option) rviz 
 ```
 
-## 4. Save panorama image in your PC
-Change six variables "**save_img1_dir, save_img2_dir, save_img3_dir, save_orb_dir, save_sync_dir, save_pano_dir**" in makePanoramaImage function !!
-- When the flag **SAVE_IMGS_WITH_FEATURES** is **1**, then we can visualize feature points of each camera image in **save_orb_dir** !!
-- Whem the flag **SAVE_SYNC_IMG_WITH_TIME** is **1**, then we can visualize time stamp of each camera image in **save_sync_dir** !!
+## 7. Save panorama image in your PC
+Change eight variables **"save_match1_dir, save_match2_dir, save_orb_dir, save_sync_dir, save_img1_dir, save_img2_dir, save_img3_dir, save_pano_dir"** in this package !!
 
-## 5. Stitch Result 
-|Method| # of Image Stitch|
-|:---|:---:|
-|Stitch (+ Camera Intrinsic)|56|
-|Stitch (+ Camera Intrinsic + Histogram Equalization)|340|
-|Stitch (+ Camera Intrinsic + Histogram Equalization + Image Masking)|779|
+## 8. Reference 
+[1] [https://github.com/SungJaeShin/Feature_matching.git](https://github.com/SungJaeShin/Feature_matching.git)
+[2] [https://github.com/SungJaeShin/Parallax.git](https://github.com/SungJaeShin/Parallax.git)
+[3] [https://github.com/SungJaeShin/KAIST-DP.git](https://github.com/SungJaeShin/KAIST-DP.git)
+[4] [https://docs.opencv.org/3.4/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323](https://docs.opencv.org/3.4/dc/d6b/group__video__track.html#ga473e4b886d0bcc6b65831eb88ed93323)
+[5] Y. Xiong and K. Pulli, "Fast panorama stitching for high-quality panoramic images on mobile phones," in IEEE Transactions on Consumer Electronics, vol. 56, no. 2, pp. 298-306, May 2010, doi: 10.1109/TCE.2010.5505931.
 
-- In the last method, the panorama outlier rejection method is additionally included.
-
-## 6. BUG to solve later
-Related with OpenCV following as:
-- OpenCV Error: Assertion failed (features1.descriptors.type() == features2.descriptors.type()) in match 
