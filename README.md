@@ -1,5 +1,6 @@
 # Image Stitching
 ## OpenCV based Image Stitching applied various method in C++
+<img src="./pano.png" width = 70% height = 70% div align=center />
 
 ## 1. Prerequisites
 ### 1.1 Dependencies
