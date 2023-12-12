@@ -4,7 +4,8 @@
 
 ## 1. Prerequisites
 ### 1.1 Dependencies
-OpenCV 4.8.0, OpenCV Contrib 4.8.0, C++ 11 version
+OpenCV 4.8.0, OpenCV Contrib 4.8.0, C++ 11 version \
+- If you already use OpenCV Version 3.x.x, then only change `cv::SIFT` to `cv::xfeatures2d::SIFT` !! 
 
 ### 1.2 **Ubuntu** and **ROS**
 Follow [ROS Installation](http://wiki.ros.org/ROS/Installation)
