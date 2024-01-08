@@ -1,3 +1,6 @@
+#ifndef EXTRACTOR
+#define EXTRACTOR
+
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
 
@@ -62,6 +65,8 @@ void sift(cv::Mat image, std::vector<cv::KeyPoint> &img_kpt)
        5) sigma: The sigma of the Gaussian applied to the input image at the octave #0 (default = 1.6)
        6) descriptorType: The type of descriptors. Only CV_32F and CV_8U are supported
     */
-    cv::Ptr<cv::SIFT> sift = cv::SIFT::create(500);
+    cv::Ptr<cv::xfeatures2d::SIFT> sift = cv::xfeatures2d::SIFT::create(500);
     sift -> detect(image, img_kpt);
 }
+
+#endif

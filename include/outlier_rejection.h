@@ -1,3 +1,6 @@
+#ifndef OUTLIER_REJECTION
+#define OUTLIER_REJECTION
+
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
 #include "parallax.h"
@@ -73,3 +76,4 @@ void outlierParallax(double avg_dx, double avg_dy,
     }
 }
                          
+#endif

@@ -55,6 +55,8 @@ void makePanoramaImage(cv::Mat image1, cv::Mat image2, cv::Mat image3, cv::Mat &
 
 	if(!opencv_based_stitching(imgs, masks_multi, cams, panorama))
 		return;
+	if(!homography_based_stitching(imgs, panorama))
+		return;
 
 	// Panorama Outlier Rejection !! 
 	double panorama_width = panorama.cols;

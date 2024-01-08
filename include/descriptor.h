@@ -1,3 +1,6 @@
+#ifndef DESCRIPTOR
+#define DESCRIPTOR
+
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
 
@@ -21,3 +24,5 @@ void daisy(cv::Mat image1, cv::Mat image2, std::vector<cv::KeyPoint> &img1_kpt, 
     daisy -> compute(image1, img1_kpt, img1_des);
     daisy -> compute(image2, img2_kpt, img2_des);   
 }
+
+#endif
