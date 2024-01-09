@@ -119,4 +119,55 @@ void reduceVector(std::vector<cv::DMatch> &matches, std::vector<uchar> status)
     matches.resize(j);
 }
 
+cv::Mat mean_filter(cv::Mat img)
+{
+    // Linear Interpolation
+    cv::Mat mean_img = img.clone();
+    for(int y = 1; y < (img.rows - 1); y++)
+    {
+        for(int x = 1; x < (img.cols - 1); x++)
+        {
+            // Get RGB values
+            int r = 0;
+            int g = 0;
+            int b = 0;
+            for(int p = -1; p <= 1; p++)
+            {
+                for(int q = -1; q <= 1; q++)
+                {
+                    if(p == 0 && q == 0)
+                        continue;
+                    int tmp_r = (int)img.at<cv::Vec3b>(y+p, x+q)[0];
+                    int tmp_g = (int)img.at<cv::Vec3b>(y+p, x+q)[1];
+                    int tmp_b = (int)img.at<cv::Vec3b>(y+p, x+q)[2];
+
+                    r+=tmp_r;
+                    g+=tmp_g;
+                    b+=tmp_b;
+                }
+            }
+
+            r /= 8;
+            g /= 8;
+            b /= 8; 
+
+            cv::Vec3b rgb(r, g, b);
+            std::cout << "rgb: " << rgb << std::endl;
+            mean_img.at<cv::Vec3b>(y, x) = rgb;
+        }
+    }
+    
+    return mean_img;
+}
+
+cv::Vec3b LinearInter(cv::Vec3b pt1, cv::Vec3b pt2, double t)
+{
+    int interpolation_r = (int)pt1[0] + t * ((int)pt2[0] - (int)pt1[0]);
+    int interpolation_g = (int)pt1[1] + t * ((int)pt2[1] - (int)pt1[1]);
+    int interpolation_b = (int)pt1[2] + t * ((int)pt2[2] - (int)pt1[2]);
+    cv::Vec3b inter_rgb(interpolation_r, interpolation_g, interpolation_b);
+
+    return inter_rgb;
+}
+
 #endif

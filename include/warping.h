@@ -66,7 +66,6 @@ cv::Mat convertcvWarpPlane(cv::Mat img, cv::Mat H)
     return warpImg;
 }
 
-// Not add CV_Linear_Interpolation
 cv::Mat convertWarpPlane(cv::Mat img, cv::Mat H)
 {
     double x_diff, y_diff;
@@ -95,5 +94,75 @@ cv::Mat convertWarpPlane(cv::Mat img, cv::Mat H)
         }
     }
 
-    return warpImg;
+    // Linear Interpolation pixels
+    cv::Mat interImg = warpImg.clone();
+    for(int y = 1; y < warpImg.rows - 1; y++)
+    {
+        for(int x = 1; x < warpImg.cols - 1; x++)
+        {
+            int cur_r = (int)warpImg.at<cv::Vec3b>(y, x)[0];
+            int cur_g = (int)warpImg.at<cv::Vec3b>(y, x)[1];
+            int cur_b = (int)warpImg.at<cv::Vec3b>(y, x)[2];
+
+            int count = 0;
+            for(int p = -1; p <= 1; p++)
+            {
+                for(int q = -1; q <= 1; q++)
+                {
+                    if(p == 0 && q == 0)
+                        continue;
+                    int tmp_r = (int)warpImg.at<cv::Vec3b>(y+p, x+q)[0];
+                    int tmp_g = (int)warpImg.at<cv::Vec3b>(y+p, x+q)[1];
+                    int tmp_b = (int)warpImg.at<cv::Vec3b>(y+p, x+q)[2];
+
+                    if(tmp_r == 0 && tmp_g == 0 && tmp_b == 0)
+                        count++;
+                }
+            }
+
+            if(cur_r == 0 && cur_g == 0 && cur_b == 0)
+            {
+                if(count >= 0 && count < 7)
+                {
+                    bool minus = false;
+                    bool plus = false; 
+
+                    int final_inter_r, final_inter_g, final_inter_b;
+
+                    cv::Vec3b pt1 = warpImg.at<cv::Vec3b>(y-1, x-1);
+                    cv::Vec3b pt2 = warpImg.at<cv::Vec3b>(y+1, x+1);
+                    cv::Vec3b inter_pt1 = LinearInter(pt1, pt2, 0.5);
+
+                    cv::Vec3b pt3 = warpImg.at<cv::Vec3b>(y-1, x+1);
+                    cv::Vec3b pt4 = warpImg.at<cv::Vec3b>(y+1, x-1);
+                    cv::Vec3b inter_pt2 = LinearInter(pt3, pt4, 0.5);
+
+                    cv::Vec3b compare(0, 0, 0);
+                    if(pt1 == compare || pt2 == compare)
+                    {
+                        final_inter_r = (int)inter_pt2[0];
+                        final_inter_g = (int)inter_pt2[1];
+                        final_inter_b = (int)inter_pt2[2];
+                    }
+                    else if(pt3 == compare || pt4 == compare)
+                    {
+                        final_inter_r = (int)inter_pt1[0];
+                        final_inter_g = (int)inter_pt1[1];
+                        final_inter_b = (int)inter_pt1[2];
+                    }
+                    else
+                    {
+                        final_inter_r = ((int)inter_pt1[0] + (int)inter_pt2[0]) / 2;
+                        final_inter_g = ((int)inter_pt1[1] + (int)inter_pt2[1]) / 2;
+                        final_inter_b = ((int)inter_pt1[2] + (int)inter_pt2[2]) / 2;
+                    }
+
+                    cv::Vec3b final_inter_pt(final_inter_r, final_inter_g, final_inter_b);
+                    interImg.at<cv::Vec3b>(y, x) = final_inter_pt;
+                }
+            }
+        }
+    }
+
+    return interImg;
 }
