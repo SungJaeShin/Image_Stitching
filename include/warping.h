@@ -9,50 +9,7 @@
 #include "opencv2/stitching/detail/matchers.hpp"
 #include "opencv2/opencv.hpp"
 
-cv::Mat calcROIImg(cv::Mat img, cv::Mat H, double &x_diff, double &y_diff,
-                   double &x_min, double &y_min, double &x_max, double &y_max)
-{
-    // Get warp corner points
-    cv::Mat pt1(3,1,cv::DataType<double>::type);
-    pt1.at<double>(0,0) = 0;
-    pt1.at<double>(1,0) = 0;
-    pt1.at<double>(2,0) = 1;
-    cv::Mat H_pt1 = H.inv() * pt1;
-    H_pt1 = H_pt1 / H_pt1.at<double>(2,0);
-
-    cv::Mat pt2(3,1,cv::DataType<double>::type);
-    pt2.at<double>(0,0) = img.cols;
-    pt2.at<double>(1,0) = 0;
-    pt2.at<double>(2,0) = 1;
-    cv::Mat H_pt2 = H.inv() * pt2;
-    H_pt2 = H_pt2 / H_pt2.at<double>(2,0);
-
-    cv::Mat pt3(3,1,cv::DataType<double>::type);
-    pt3.at<double>(0,0) = 0;
-    pt3.at<double>(1,0) = img.rows;
-    pt3.at<double>(2,0) = 1;
-    cv::Mat H_pt3 = H.inv() * pt3;
-    H_pt3 = H_pt3 / H_pt3.at<double>(2,0);
-
-    cv::Mat pt4(3,1,cv::DataType<double>::type);
-    pt4.at<double>(0,0) = img.cols;
-    pt4.at<double>(1,0) = img.rows;
-    pt4.at<double>(2,0) = 1;
-    cv::Mat H_pt4 = H.inv() * pt4;
-    H_pt4 = H_pt4 / H_pt4.at<double>(2,0);
-
-    // Make WarpImg size (called ROI img)
-    x_min = std::min({H_pt1.at<double>(0,0), H_pt2.at<double>(0,0), H_pt3.at<double>(0,0), H_pt4.at<double>(0,0)});
-    x_max = std::max({H_pt1.at<double>(0,0), H_pt2.at<double>(0,0), H_pt3.at<double>(0,0), H_pt4.at<double>(0,0)});
-    y_min = std::min({H_pt1.at<double>(1,0), H_pt2.at<double>(1,0), H_pt3.at<double>(1,0), H_pt4.at<double>(1,0)});
-    y_max = std::max({H_pt1.at<double>(1,0), H_pt2.at<double>(1,0), H_pt3.at<double>(1,0), H_pt4.at<double>(1,0)});
-    
-    x_diff = std::fabs(x_max - x_min);
-    y_diff = std::fabs(y_max - y_min);
-    cv::Mat warpImg(y_diff, x_diff, img.type(), cv::Scalar(0,0,0));
-
-    return warpImg;
-}
+#include "imgproc.h"
 
 cv::Mat convertcvWarpPlane(cv::Mat img, cv::Mat H)
 {
@@ -131,11 +88,11 @@ cv::Mat convertWarpPlane(cv::Mat img, cv::Mat H)
 
                     cv::Vec3b pt1 = warpImg.at<cv::Vec3b>(y-1, x-1);
                     cv::Vec3b pt2 = warpImg.at<cv::Vec3b>(y+1, x+1);
-                    cv::Vec3b inter_pt1 = LinearInter(pt1, pt2, 0.5);
+                    cv::Vec3b inter_pt1 = PixelLinearInter(pt1, pt2, 0.5);
 
                     cv::Vec3b pt3 = warpImg.at<cv::Vec3b>(y-1, x+1);
                     cv::Vec3b pt4 = warpImg.at<cv::Vec3b>(y+1, x-1);
-                    cv::Vec3b inter_pt2 = LinearInter(pt3, pt4, 0.5);
+                    cv::Vec3b inter_pt2 = PixelLinearInter(pt3, pt4, 0.5);
 
                     cv::Vec3b compare(0, 0, 0);
                     if(pt1 == compare || pt2 == compare)
