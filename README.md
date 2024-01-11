@@ -161,6 +161,24 @@ Clone the repository and catkin_make:
       </tr>
   </table>
 
+- Comparing Stitching Time !!
+  <table>
+      <tr>
+        <td> Method </td>
+        <td> Auto Stitching </td>
+        <td> Fast Stitching API </td>
+        <td> Only Homography Stitching </td>
+        <td> Only Homography Stitching (not use OpenCV Warp API) </td>
+      </tr> 
+      <tr>
+        <td> Time (sec) </td>
+        <td> 4.00 </td>
+        <td> 0.90 </td>
+        <td> 0.02 </td>
+        <td> 0.37 </td>
+      </tr>
+  </table>  
+
 - Feature Matching using test pair
   <table>
       <tr>
