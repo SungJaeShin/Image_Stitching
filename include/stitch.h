@@ -114,13 +114,14 @@ bool homography_based_stitching(std::vector<cv::Mat> imgs, cv::Mat &panorama)
         // Image Warping
         cv::Mat warp_img2 = convertWarpPlane(imgs[1], H);
         
-        // Image Warping w/ CV
+        // Image Warping w/ OpenCV
 		cv::Mat warp_cvimg2 = convertcvWarpPlane(imgs[1], H);
 
-        // Stitching Image
-        cv::Mat panorama = AddcvImg(imgs[0], warp_cvimg2);
+        // Stitching Image w/ OpenCV
+        cv::Mat panocvImg = AddcvImg(imgs[0], warp_cvimg2);
         
-
+        // Stitching Image
+        cv::Mat panoHImg = AddHomographyImg(imgs[0], imgs[1], warp_img2, H);
     }
     else
     {

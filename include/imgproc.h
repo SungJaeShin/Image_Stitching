@@ -239,4 +239,193 @@ cv::Mat AddcvImg(cv::Mat img1, cv::Mat img2)
     return panoImg;
 }
 
+cv::Mat AddHomographyImg(cv::Mat img1, cv::Mat img2, cv::Mat warp_img2, cv::Mat H)
+{
+    double x_diff, y_diff;
+    double x_min, y_min, x_max, y_max;
+    cv::Mat ROIImg = calcROIImg(img2, H, x_diff, y_diff, x_min, y_min, x_max, y_max);
+
+    // Translate img1 for warp img2 
+    cv::Mat img1_trans = img1.clone();
+    if(x_min <= 0 && y_min > 0)
+    {
+        cv::Mat x_trans_img1(img1.rows, (img1.cols - x_min), img1.type(), cv::Scalar(0,0,0));
+        for(int y = 0; y < img1.rows; y++)
+        {
+            for(int x = 0; x < img1.cols; x++)
+            {
+                cv::Vec3b rgb = img1.at<cv::Vec3b>(y, x);
+                x_trans_img1.at<cv::Vec3b>(y, x - x_min) = rgb;
+            }
+        }
+        img1_trans = x_trans_img1.clone();
+    }
+    else if(x_min > 0 && y_min < 0)
+    {
+        cv::Mat y_trans_img1((img1.rows - y_min), img1.cols, img1.type(), cv::Scalar(0,0,0));
+        for(int y = 0; y < img1.rows; y++)
+        {
+            for(int x = 0; x < img1.cols; x++)
+            {
+                cv::Vec3b rgb = img1.at<cv::Vec3b>(y, x);
+                y_trans_img1.at<cv::Vec3b>(y - y_min, x) = rgb;
+            }
+        }
+        img1_trans = y_trans_img1.clone();
+    }
+    else if(x_min < 0 && y_min < 0)
+    {
+        cv::Mat xy_trans_img1((img1.rows - y_min), (img1.cols - x_min), img1.type(), cv::Scalar(0,0,0));
+        for(int y = 0; y < img1.rows; y++)
+        {
+            for(int x = 0; x < img1.cols; x++)
+            {
+                cv::Vec3b rgb = img1.at<cv::Vec3b>(y, x);
+                xy_trans_img1.at<cv::Vec3b>(y - y_min, x - x_min) = rgb;
+            }
+        }
+        img1_trans = xy_trans_img1.clone();
+    }
+    
+    double img1_col = img1_trans.cols;
+    double img1_row = img1_trans.rows;
+    double img2_col = warp_img2.cols;
+    double img2_row = warp_img2.rows;
+
+    cv::Mat panoImg;
+    if(img1_col <= img2_col && img1_row <= img2_row)
+    {
+        cv::Mat transImg(img2_row, img2_col, img1.type(), cv::Scalar(0,0,0));
+        panoImg = transImg.clone();
+    }
+    else if(img1_col <= img2_col && img1_row > img2_row)
+    {
+        cv::Mat transImg(img1_row, img2_col, img1.type(), cv::Scalar(0,0,0));
+        panoImg = transImg.clone();
+    }
+    else if(img1_col > img2_col && img1_row <= img2_row)
+    {
+        cv::Mat transImg(img2_row, img1_col, img1.type(), cv::Scalar(0,0,0));
+        panoImg = transImg.clone();
+    }
+    else
+    {
+        cv::Mat transImg(img1_row, img1_col, img1.type(), cv::Scalar(0,0,0));
+        panoImg = transImg.clone();
+    }
+
+    std::cout << "trans img size: " << img1_trans.size() << std::endl;
+    std::cout << "pano img size: " << panoImg.size() << std::endl;
+
+    // Add two imgs
+    for(int y = 0; y < panoImg.rows; y++)
+    {
+        for(int x = 0; x < panoImg.cols; x++)
+        {
+            int final_r, final_g, final_b;
+            cv::Vec3b compare(0, 0, 0);
+
+            if(img1_col <= x && x < img2_col)
+            {
+                cv::Vec3b cur_rgb2 = warp_img2.at<cv::Vec3b>(y, x);
+                if(cur_rgb2 == compare)
+                    continue;
+                else
+                {
+                    final_r = (int)cur_rgb2[0];
+                    final_g = (int)cur_rgb2[1];
+                    final_b = (int)cur_rgb2[2];
+                }
+                
+                cv::Vec3b final_pt(final_r, final_g, final_b);
+                panoImg.at<cv::Vec3b>(y, x) = final_pt;
+
+                continue;
+            }
+            else if(img2_col <= x && x < img1_col)
+            {
+                cv::Vec3b cur_rgb1 = img1_trans.at<cv::Vec3b>(y, x);
+                if(cur_rgb1 == compare)
+                    continue;
+                else
+                {
+                    final_r = (int)cur_rgb1[0];
+                    final_g = (int)cur_rgb1[1];
+                    final_b = (int)cur_rgb1[2];
+                }
+                
+                cv::Vec3b final_pt(final_r, final_g, final_b);
+                panoImg.at<cv::Vec3b>(y, x) = final_pt;
+
+                continue;
+            }    
+
+            if(img1_row <= y && y < img2_row)
+            {
+                cv::Vec3b cur_rgb2 = warp_img2.at<cv::Vec3b>(y, x);
+                if(cur_rgb2 == compare)
+                    continue;
+                else
+                {
+                    final_r = (int)cur_rgb2[0];
+                    final_g = (int)cur_rgb2[1];
+                    final_b = (int)cur_rgb2[2];
+                }
+                
+                cv::Vec3b final_pt(final_r, final_g, final_b);
+                panoImg.at<cv::Vec3b>(y, x) = final_pt;
+
+                continue;
+            }
+            else if(img2_row <= y && y < img1_row)
+            {
+                cv::Vec3b cur_rgb1 = img1_trans.at<cv::Vec3b>(y, x);
+                if(cur_rgb1 == compare)
+                    continue;
+                else
+                {
+                    final_r = (int)cur_rgb1[0];
+                    final_g = (int)cur_rgb1[1];
+                    final_b = (int)cur_rgb1[2];
+                }
+                
+                cv::Vec3b final_pt(final_r, final_g, final_b);
+                panoImg.at<cv::Vec3b>(y, x) = final_pt;
+
+                continue;
+            }
+
+            // Get RGB values 
+            cv::Vec3b cur_rgb1 = img1_trans.at<cv::Vec3b>(y, x);
+            cv::Vec3b cur_rgb2 = warp_img2.at<cv::Vec3b>(y, x);
+
+            if(cur_rgb1 == compare && cur_rgb2 == compare)
+                continue;
+            else if(cur_rgb1 == compare && cur_rgb2 != compare)
+            {
+                final_r = (int)cur_rgb2[0];
+                final_g = (int)cur_rgb2[1];
+                final_b = (int)cur_rgb2[2];
+            }
+            else if(cur_rgb1 != compare && cur_rgb2 == compare)
+            {
+                final_r = (int)cur_rgb1[0];
+                final_g = (int)cur_rgb1[1];
+                final_b = (int)cur_rgb1[2];
+            }
+            else
+            {
+                final_r = ((int)cur_rgb1[0] + (int)cur_rgb2[0]) / 2;
+                final_g = ((int)cur_rgb1[1] + (int)cur_rgb2[1]) / 2;
+                final_b = ((int)cur_rgb1[2] + (int)cur_rgb2[2]) / 2;
+            }
+
+            cv::Vec3b final_pt(final_r, final_g, final_b);
+            panoImg.at<cv::Vec3b>(y, x) = final_pt;
+        }
+    }
+
+    return panoImg;
+}
+
 #endif
