@@ -148,10 +148,47 @@ Clone the repository and catkin_make:
     $ (option) rviz 
 ```
 
-## 7. Save panorama image in your PC
+## 7. Results
+- Test Pair (EuRoC dataset) 
+  <table>
+      <tr>
+         <td> Img1 </td>
+         <td> Img2 </td>
+      </tr> 
+      <tr>
+         <td><img src="./img1.png"/> </td>
+         <td><img src="./img2.png"/> </td>
+      </tr>
+  </table>
+
+- Img warping using test pair (additionally using Interpolation method)
+  <table>
+      <tr>
+         <td> Img2 warp using cv::warpPerspective </td>
+         <td> Img2 not using cv::warpPerspective </td>
+      </tr> 
+      <tr>
+         <td><img src="./cvimg2_warp.png"/> </td>
+         <td><img src="./Himg2_warp.png"/> </td>
+      </tr>
+  </table>
+
+- Direct Stitching using test pair
+  <table>
+      <tr>
+         <td> Img1 + Img2 warp using cv::warpPerspective </td>
+         <td> Img1 + Img2 not using cv::warpPerspective </td>
+      </tr> 
+      <tr>
+         <td><img src="./directpanocvImg.png"/> </td>
+         <td><img src="./directpanoHImg.png"/> </td>
+      </tr>
+  </table>  
+
+## 8. Save panorama image in your PC
 Change eight variables **"save_match1_dir, save_match2_dir, save_orb_dir, save_sync_dir, save_img1_dir, save_img2_dir, save_img3_dir, save_pano_dir"** in this package !!
 
-## 8. Reference 
+## 9. Reference 
 [1] [https://github.com/SungJaeShin/Feature_matching.git](https://github.com/SungJaeShin/Feature_matching.git) \
 [2] [https://github.com/SungJaeShin/Parallax.git](https://github.com/SungJaeShin/Parallax.git) \
 [3] [https://github.com/SungJaeShin/KAIST-DP.git](https://github.com/SungJaeShin/KAIST-DP.git) \
