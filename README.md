@@ -203,6 +203,9 @@ Clone the repository and catkin_make:
   </table>
 
 - Direct Stitching using test pair
+  - OpenCV Warp API stitching (**About 0.02 Sec**) 
+  - Not use OpenCV Warp API stitching (**About 0.37 Sec**)
+
   <table>
       <tr>
          <td> Img1 + Img2 warp using cv::warpPerspective </td>
