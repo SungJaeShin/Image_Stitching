@@ -71,8 +71,8 @@ Follow [KAIST-DP](https://github.com/SungJaeShin/KAIST-DP.git) Dataset
     - Blender &rarr; cv::detail::MultiBandBlender
 
 - **Direct Stitching Method based Homography** (in `warping.h`, `imgproc.h`) 
-    - OpenCV based stitching
-    - Not use OpenCV stitching
+    - OpenCV based stitching &rarr; cv::warpPerspective
+    - Not use OpenCV stitching &rarr; cv::findHomography
   
 ## 4 **Changing Parameters**
 ### Parameters in "paramsetting.h"
