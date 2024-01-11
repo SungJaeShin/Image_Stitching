@@ -3,6 +3,43 @@
 
 #include <opencv2/opencv.hpp>
 
+/* [InterpolationFlags] 
+Ref site: https://docs.opencv.org/3.2.0/da/d54/group__imgproc__transform.html#ga5bb5a1fea74ea38e1a5445ca803ff121
+
+CV_INTER_NEAREST        : nearest neighbor interpolation
+CV_INTER_LINEAR 	    : bilinear interpolation
+CV_INTER_CUBIC 	        : bicubic interpolation
+CV_INTER_AREA 	        : resampling using pixel area relation. 
+                          It may be a preferred method for image decimation, as it gives moire'-free results. 
+                          But when the image is zoomed, it is similar to the INTER_NEAREST method.
+CV_INTER_LANCZOS4 	    : Lanczos interpolation over 8x8 neighborhood
+CV_INTER_MAX 	        : mask for interpolation codes
+CV_WARP_FILL_OUTLIERS 	: flag, fills all of the destination image pixels. 
+                          If some of them correspond to outliers in the source image, they are set to zero
+CV_WARP_INVERSE_MAP 	: flag, inverse transformation
+*/
+
+cv::Mat convertcvPolarimg(cv::Mat img)
+{
+    cv::Mat polar_img;
+    cv::Point2f center( (float)img.cols / 2, (float)img.rows / 2 );
+    double radius = (double)img.cols * 2;
+    cv::linearPolar(img, polar_img, center, radius, CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS);
+
+    return polar_img;
+}
+
+cv::Mat convertcvLogPolarimg(cv::Mat img)
+{
+    cv::Mat log_polar_img;
+    cv::Point2f center( (float)img.cols / 2, (float)img.rows / 2 );
+    double radius = (double)img.cols * 2;
+    double M = (double)img.cols / log(radius);
+    cv::logPolar(img, log_polar_img, center, M, CV_INTER_LINEAR + CV_WARP_FILL_OUTLIERS);
+    
+    return log_polar_img;
+}
+
 cv::Mat mean_filter(cv::Mat img)
 {
     // Linear Interpolation
