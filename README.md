@@ -161,6 +161,35 @@ Clone the repository and catkin_make:
       </tr>
   </table>
 
+- Feature Matching using test pair
+  <table>
+      <tr>
+         <td> SIFT features + DAISY descriptors + BF Matcher + KNN Matching </td>
+      </tr> 
+      <tr>
+         <td><img src="./matching_result.png"/> </td>
+      </tr>
+  </table>  
+
+- OpenCV Stitching using test pair
+  - Original stitching (**About 4.0 Sec**) &rarr; Graph Cut Seam Finding Method + Block Gain Compensator Method
+  - Fast stitching (**About 0.9 Sec**) &rarr; Dynamic Programming Seam Finding Method + Gain Compensator Method
+
+  <table>
+      <tr>
+         <td> Original Auto Stitching </td>
+      </tr> 
+      <tr>
+         <td><img src="./auto_stitching.jpg"/> </td>
+      </tr>
+      <tr>
+         <td> Fast Stitching </td>
+      </tr> 
+      <tr>
+         <td><img src="./fast_stitching.jpg"/> </td>
+      </tr>
+  </table>
+
 - Img warping using test pair (additionally using Interpolation method)
   <table>
       <tr>
@@ -182,6 +211,18 @@ Clone the repository and catkin_make:
       <tr>
          <td><img src="./directpanocvImg.png"/> </td>
          <td><img src="./directpanoHImg.png"/> </td>
+      </tr>
+  </table>  
+
+- Convert Plane image to polar image using OpenCV API
+  <table>
+      <tr>
+         <td> Polar Img (cv::linearPolar) </td>
+         <td> Log Polar Img (cv::logPolar) </td>
+      </tr> 
+      <tr>
+         <td><img src="./polarcvImg.png"/> </td>
+         <td><img src="./logpolarcvImg.png"/> </td>
       </tr>
   </table>  
 
