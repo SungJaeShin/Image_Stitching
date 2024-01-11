@@ -69,6 +69,10 @@ Follow [KAIST-DP](https://github.com/SungJaeShin/KAIST-DP.git) Dataset
     - Exposure &rarr; cv::detail::GainCompensator
     - Seam &rarr; cv::detail::DpSeamFinder
     - Blender &rarr; cv::detail::MultiBandBlender
+
+- **Direct Stitching Method based Homography** (in `warping.h`, `imgproc.h`) 
+    - OpenCV based stitching
+    - Not use OpenCV stitching
   
 ## 4 **Changing Parameters**
 ### Parameters in "paramsetting.h"
